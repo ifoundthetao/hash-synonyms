@@ -4,6 +4,7 @@ Hash Synonyms is designed to find two different data representations that hash
 to the same value.  Similar to how two different words mean the same thing.
 
 Hash Synonyms will take two input files:
+
     Original Input File -   This is the file which contains the original data
                             to generate the hash from
 
@@ -12,7 +13,7 @@ Hash Synonyms will take two input files:
                             Changes are expressed by delimeters
 
 # Use
-./hash-synonym -i original.file -m modified.file -d ^ -s % -l fixed -b"\x00\x0a"
+`./hash-synonym -i original.file -m modified.file -d ^ -s % -l fixed -b"\x00\x0a"`
 
     -i, --include-file:     Original input file
     -m, --modified-file:    Modified input file
