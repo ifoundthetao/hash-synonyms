@@ -20,6 +20,6 @@ Hash Synonyms will take two input files:
     -d, --delimeter-group:  Marker for the start/end of modifiable characters
     -s, --single-delimeter: Marker for a single character that can be modified
     -b, --bad-characters:   String with Hex values of characters not to use
-    -l, --length:           fixed: Fixed length, output should be same length
-                            open: No restrictions
+    -f, --fixed:            Fixed length, output should be same length as the
+                            input file.  The default is no restrictions.
     -o, --output-file       Location to write to, instead of stdout
