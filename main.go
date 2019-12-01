@@ -4,19 +4,23 @@ import (
     "flag"
     "fmt"
     "io/ioutil"
+    "os"
 )
 
 func checkForErrors(e error) {
     if e != nil {
-        panic(e)
+        fmt.Println("No File Given")
+        os.Exit(1)
     }
 }
 
 func main() {
-    fileLocationPtr := flag.String("include-file", "Original input file", "")
+    var fileLocation string
+    flag.StringVar(&fileLocation, "include-file", "Original input file", "")
+    flag.StringVar(&fileLocation, "i", "Original input file", fileLocation)
     flag.Parse()
 
-    fileContents, err := ioutil.ReadFile(*fileLocationPtr)
+    fileContents, err := ioutil.ReadFile(fileLocation)
     checkForErrors(err)
 
     md5Hasher := md5.New()
