@@ -14,13 +14,29 @@ func checkForErrors(e error) {
     }
 }
 
-func main() {
-    var fileLocation string
-    flag.StringVar(&fileLocation, "include-file", "Original input file", "")
-    flag.StringVar(&fileLocation, "i", "Original input file", fileLocation)
+func validateStartOptions() (*string, *string) {
+    inputFileLocation := ""
+    moddedFileLocation := ""
+
+    flag.StringVar(&inputFileLocation, "include-file", "Original input file", "")
+    flag.StringVar(&inputFileLocation, "i", "Original input file", inputFileLocation)
+
+    flag.StringVar(&moddedFileLocation, "modified-file", "Modified file", "")
+    flag.StringVar(&moddedFileLocation, "m", "Modded file", moddedFileLocation)
+
     flag.Parse()
 
-    fileContents, err := ioutil.ReadFile(fileLocation)
+    return &inputFileLocation, &moddedFileLocation
+}
+
+
+func main() {
+    var inputFileLocationPtr, moddedFileLocationPtr *string
+
+    inputFileLocationPtr, moddedFileLocationPtr = validateStartOptions()
+    fmt.Println(*moddedFileLocationPtr)
+
+    fileContents, err := ioutil.ReadFile(*inputFileLocationPtr)
     checkForErrors(err)
 
     md5Hasher := md5.New()
