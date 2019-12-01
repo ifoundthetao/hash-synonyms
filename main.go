@@ -1,6 +1,7 @@
 package main
 import (
     "crypto/md5"
+    "flag"
     "fmt"
     "io/ioutil"
 )
@@ -12,7 +13,10 @@ func checkForErrors(e error) {
 }
 
 func main() {
-    fileContents, err := ioutil.ReadFile("./file.txt")
+    fileLocationPtr := flag.String("include-file", "Original input file", "")
+    flag.Parse()
+
+    fileContents, err := ioutil.ReadFile(*fileLocationPtr)
     checkForErrors(err)
 
     md5Hasher := md5.New()
