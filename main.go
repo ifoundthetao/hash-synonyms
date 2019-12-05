@@ -1,13 +1,22 @@
 package main
 import (
     "crypto/md5"
+    "crypto/sha1"
     "flag"
     "fmt"
+    "hash"
     "io/ioutil"
     "os"
 )
 const NO_ORIGINAL_INPUT_FILE_ERROR_NUMBER int = 1
 const NO_MODDED_FILE_ERROR_NUMBER int = 2
+
+func checkForErrors(e error) {
+    if e != nil {
+        fmt.Println("Error:", e)
+        os.Exit(1)
+    }
+}
 
 func getErrorMessages() []string {
     errorMessages := make([]string, 3)
@@ -31,7 +40,6 @@ func validateStartOptions() (*string, *string) {
     flag.Parse()
 
     errorNumber := 0
-
     switch {
     case inputFileLocation == "":
         errorNumber = NO_ORIGINAL_INPUT_FILE_ERROR_NUMBER
@@ -47,6 +55,17 @@ func validateStartOptions() (*string, *string) {
     return &inputFileLocation, &moddedFileLocation
 }
 
+func getHasher(hashType string) hash.Hash {
+    var newHash hash.Hash
+    switch hashType{
+    case "sha1":
+        newHash = sha1.New()
+    default:
+        newHash = md5.New()
+    }
+    return newHash
+
+}
 
 func main() {
     var inputFileLocationPtr, moddedFileLocationPtr *string
@@ -55,11 +74,27 @@ func main() {
     fmt.Println(*moddedFileLocationPtr)
 
     fileContents, err := ioutil.ReadFile(*inputFileLocationPtr)
+    checkForErrors(err)
 
-    md5Hasher := md5.New()
+    hasher := getHasher("sha1")
 
-    md5Hasher.Write([]byte(fileContents))
-    md5Hash := md5Hasher.Sum(nil)
+    hasher.Write([]byte(fileContents))
+    hash := hasher.Sum(nil)
+    hasher.Reset()
+    fmt.Printf("%x\n", hash)
+    hasher.Write([]byte("This is interesting"))
+    hash = hasher.Sum(nil)
+    hasher.Reset()
+    fmt.Printf("%x\n", hash)
+    hasher.Write([]byte(fileContents))
+    hash = hasher.Sum(nil)
+    hasher.Reset()
+    fmt.Printf("%x\n", hash)
+    hasher.Write([]byte(fileContents))
+    hash = hasher.Sum(nil)
+    hasher.Reset()
+    fmt.Printf("%x\n", hash)
 
-    fmt.Printf("%x\n", md5Hash)
+
+    //fmt.Printf("%x\n", md5Hash)
 }
