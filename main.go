@@ -1,5 +1,6 @@
 package main
 import (
+    "bytes"
     "crypto/md5"
     "crypto/sha1"
     "flag"
@@ -67,11 +68,22 @@ func getHasher(hashType string) hash.Hash {
 
 }
 
+func getResults(originalHash []byte, contents string, hasher hash.Hash) {
+    hasher.Reset()
+    hasher.Write([]byte(contents))
+    contentsHash := hasher.Sum(nil)
+    if bytes.Equal(originalHash, contentsHash) {
+        fmt.Println("Hash match")
+    } else {
+        fmt.Println("Hashes do not match.")
+    }
+}
+
 func main() {
     var inputFileLocationPtr, moddedFileLocationPtr *string
 
     inputFileLocationPtr, moddedFileLocationPtr = validateStartOptions()
-    fmt.Println(*moddedFileLocationPtr)
+    *moddedFileLocationPtr  = ""
 
     fileContents, err := ioutil.ReadFile(*inputFileLocationPtr)
     checkForErrors(err)
@@ -80,21 +92,5 @@ func main() {
 
     hasher.Write([]byte(fileContents))
     hash := hasher.Sum(nil)
-    hasher.Reset()
-    fmt.Printf("%x\n", hash)
-    hasher.Write([]byte("This is interesting"))
-    hash = hasher.Sum(nil)
-    hasher.Reset()
-    fmt.Printf("%x\n", hash)
-    hasher.Write([]byte(fileContents))
-    hash = hasher.Sum(nil)
-    hasher.Reset()
-    fmt.Printf("%x\n", hash)
-    hasher.Write([]byte(fileContents))
-    hash = hasher.Sum(nil)
-    hasher.Reset()
-    fmt.Printf("%x\n", hash)
-
-
-    //fmt.Printf("%x\n", md5Hash)
+    getResults(hash, "string to hash", hasher)
 }
